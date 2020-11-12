@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration status="trace">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="[%-level]%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %logger{36} - %msg%n"/>
+        </Console>
+        
+        <RollingFile name="RollingFileInfo" fileName="log/guitool_info.log"
+                     filePattern="logs/%d{yyyy-MM-dd}/guitool_%d{yyyy-MM-dd}_%i.log">
+            <!-- 只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch） -->
+            <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
+            <!-- 输出的格式  -->
+            <PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss:SSS}] [%p] - %l - %m%n"/>
+            <!--
+                Policies：自动封存日志策略，表示日志什么时候应该产生新日志，
+                可以有时间策略和大小策略等，并且：只有满足一个策略，就好生成一个新的文件。
+                这里使用的是时间和大小都使用了，每隔1天产生新的日志文件
+                如果果今天的文件大小到了设定的size，则会新生成一个文件，上面的%i就表示今天的第几个文件
+             -->
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"/>
+                <SizeBasedTriggeringPolicy size="20MB"/>
+            </Policies>
+            <!--
+                DefaultRolloverStrategy属性如不设置，
+                则默认为最多同一文件夹下7个文件，这里设置了20
+             -->
+            <DefaultRolloverStrategy max="20"/>
+        </RollingFile>
+    </Appenders>
+    
+    <Root name="Root" level="info">
+        <AppenderRef ref="Console"/>
+        <!--<AppenderRef ref="RollingFileInfo"/>-->
+    </Root>
+        
+    <Loggers>
+        <Logger name="com.leotest" level="debug">
+        	<AppenderRef ref="RollingFileInfo" />
+        </Logger>
+        <Logger name="com.leotest.logtest" level="info" />
+        <Logger name="com.leotest.logtest.App" level="debug" additivity="false">
+        	<AppenderRef ref="RollingFileInfo" />
+        </Logger>
+    </Loggers>
+</Configuration>

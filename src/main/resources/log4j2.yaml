@@ -1,0 +1,48 @@
+Configuration:
+  status: error
+
+  Appenders:
+    Console:
+      - name: JSON_LAYOUT_APPENDER
+        target: SYSTEM_OUT
+        JSONLayout:
+          compact: true
+          complete: false
+          objectMessageAsJsonObject: true
+
+      - name: CONSOLE_ROOT
+        target: SYSTEM_OUT
+        PatternLayout:
+          alwaysWriteExceptions: true
+          pattern: "[%threadName] %-5level %logger{36} - %message{nolookups} %ex{separator(|)} %n"
+ 
+    RandomAccessFile:
+      - name: RandomAccessFile
+        fileName: logs/asyncWithLocation.log
+        immediateFlush: false
+        append: false
+        JSONLayout:
+          compact: true
+          complete: false
+          objectMessageAsJsonObject: true
+#        PatternLayout:
+#          pattern: "%d %p %class{1.} [%t] %location %m %ex%n"
+
+  Loggers:
+    logger:
+      - name: LOGGER_WITH_JSON_LAYOUT
+        level: info
+        additivity: false
+        AppenderRef:
+          ref: JSON_LAYOUT_APPENDER
+          
+      - name: com.leotest.logtest.App
+        level: info
+        additivity: false
+        AppenderRef:
+          ref: RandomAccessFile
+
+    Root:
+      level: info
+      AppenderRef:
+        ref: CONSOLE_ROOT
